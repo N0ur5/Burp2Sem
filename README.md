@@ -4,7 +4,7 @@ My first attempt at a Burpsuite Extension. It is built to passively send temp co
 Burp (as of `2025.2.4`) seems to do a great job batching these passive tasks up since they do take some time to complete and are resource intensive. There is likely enormous room for a performance boost but  ¯\\_(ツ)_/¯
 
 ## Prereq it
-Build with the below Maven/OpenJDK versions:
+Built with the below Maven/OpenJDK versions:
 ```
 └─$ mvn --version     
 Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
