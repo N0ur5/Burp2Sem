@@ -3,6 +3,11 @@ My first attempt at a Burpsuite Extension. It is built to passively send temp co
 
 Burp (as of `2025.2.4`) seems to do a great job batching these passive tasks up since they do take some time to complete and are resource intensive. There is likely enormous room for a performance boost but  ¯\\_(ツ)_/¯
 
+## Prereq it
+You need semgrep in your PATH. 
+
+You will want to have a local copy of semgrep rules too. (`git clone https://github.com/returntocorp/semgrep-rules.git`)
+
 ## Git it
 `git clone https://github.com/N0ur5/Burp2Sem.git`
 
