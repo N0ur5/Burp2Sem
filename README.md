@@ -34,6 +34,6 @@ There is also plenty to watch in the `Output` tab of `Extensions -> Installed ->
 
 
 ## TODO (Maybe... someday)
-1. Fix highlighting syntax (Seems like maybe not possible with passive checks, might need ot migrate to an active version too for this)
+1. Fix highlighting syntax (Seems like maybe not possible with passive checks, might need to migrate to an active version too for this)
 2. Fix severity/confidence
 3. Move to a damon model for performance boost. Semgrep binary is launched for each js/html file that is analyzed currently. 
