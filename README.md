@@ -4,6 +4,16 @@ My first attempt at a Burpsuite Extension. It is built to passively send temp co
 Burp (as of `2025.2.4`) seems to do a great job batching these passive tasks up since they do take some time to complete and are resource intensive. There is likely enormous room for a performance boost but  ¯\\_(ツ)_/¯
 
 ## Prereq it
+Build with the below Maven/OpenJDK versions:
+```
+└─$ mvn --version     
+Apache Maven 3.9.9 (8e8579a9e76f7d015ee5ec7bfcdc97d260186937)
+Maven home: /home/kali/Downloads/apache-maven-3.9.9
+Java version: 17.0.15-ea, vendor: Debian, runtime: /usr/lib/jvm/java-17-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.12.20-amd64", arch: "amd64", family: "unix"
+```
+
 You need semgrep in your PATH. 
 
 You will want to have a local copy of semgrep rules too. (`git clone https://github.com/returntocorp/semgrep-rules.git`)
