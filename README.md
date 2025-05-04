@@ -5,7 +5,7 @@ Burpsuite Extension built to passively send copies of proxied HTML/JS to Semgrep
 `git clone https://github.com/N0ur5/Burp2Sem.git`
 
 ## Mod it
-Point this tool at a directory full of semgrep rules by modifying the "rulesDir" variable in `SemgrepScanCheck.java`
+Point this tool at a directory full of semgrep rules by modifying the `rulesDir` variable in `SemgrepScanCheck.java`
 
 ## Build it
 `cd Burp2Sem`
