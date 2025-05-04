@@ -29,6 +29,10 @@ This is a passive check. Assuming you have semgrep installed locally... this thi
 
 There is also plenty to watch in the `Output` tab of `Extensions -> Installed -> Semgrep Passive Scanner` so that you can see what is going on.
 
+<img width="613" alt="image" src="https://github.com/user-attachments/assets/772b0b36-bd17-4423-85ff-f912ffa92bb7" />
+
+
+
 ## TODO (Maybe... someday)
 1. Fix highlighting syntax (Seems like maybe not possible with passive checks, might need ot migrate to an active version too for this)
 2. Fix severity/confidence
