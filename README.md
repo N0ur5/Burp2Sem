@@ -18,6 +18,7 @@ Point this tool at a directory full of semgrep rules by modifying the "rulesDir"
 ## Use it
 This is a passive check. Assuming you have semgrep installed locally... this thing should just cook "behind the scenes" and flag anything that semgrep would flag. You will need to take the finding and manually track down the actualy exploitability of any flagged Issues.
 
+<img width="416" alt="image" src="https://github.com/user-attachments/assets/6b302ae7-834a-445f-856b-92047ce87326" />
 
 ## TODO (Maybe... someday)
 1. Fix highlighting syntax (Seems like maybe not possible with passive checks, might need ot migrate to an active version too for this)
