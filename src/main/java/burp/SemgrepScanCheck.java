@@ -1,17 +1,15 @@
 package burp;
 
 import burp.api.montoya.MontoyaApi;
-import burp.api.montoya.core.Annotations;
-import burp.api.montoya.core.HighlightColor;
 import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.scanner.ScanCheck;
+import burp.api.montoya.scanner.AuditResult;
+import burp.api.montoya.scanner.ConsolidationAction;
 import burp.api.montoya.scanner.audit.insertionpoint.AuditInsertionPoint;
 import burp.api.montoya.scanner.audit.issues.AuditIssue;
 import burp.api.montoya.scanner.audit.issues.AuditIssueSeverity;
 import burp.api.montoya.scanner.audit.issues.AuditIssueConfidence;
-import burp.api.montoya.scanner.AuditResult;
-import burp.api.montoya.scanner.ConsolidationAction;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +32,8 @@ import static burp.api.montoya.scanner.audit.issues.AuditIssue.auditIssue;
 public class SemgrepScanCheck implements ScanCheck {
     private final MontoyaApi api;
     private final ObjectMapper mapper = new ObjectMapper();
-<<<<<<< HEAD
-=======
-  // Replace the rulesDir below with your own directory
->>>>>>> origin/main
+
+    // point this at your local rules dir
     private final String rulesDir = "/home/kali/semgrab/semgrep-rules/javascript/";
 
     public SemgrepScanCheck(MontoyaApi api) {
@@ -51,15 +47,14 @@ public class SemgrepScanCheck implements ScanCheck {
 
         String ct = rr.response().headers().stream()
                      .filter(h -> h.name().equalsIgnoreCase("Content-Type"))
-                     .map(HttpHeader::value)
-                     .findFirst().orElse("");
+                     .map(HttpHeader::value).findFirst().orElse("");
         api.logging().logToOutput("[Semgrep]  Content-Type: " + ct);
 
         List<AuditIssue> issues = new ArrayList<>();
         try {
             String body = rr.response().bodyToString();
             if (ct.toLowerCase().contains("javascript")) {
-                issues.addAll(scanJs(rr, url, body));
+                issues.addAll(scanJs(url, body));
             } else if (ct.toLowerCase().contains("html")) {
                 Document doc = Jsoup.parse(body);
                 Elements scripts = doc.select("script:not([src])");
@@ -67,7 +62,7 @@ public class SemgrepScanCheck implements ScanCheck {
                 int idx = 0;
                 for (Element s : scripts) {
                     idx++;
-                    issues.addAll(scanJs(rr, url + "#inline-" + idx, s.data()));
+                    issues.addAll(scanJs(url + "#inline-" + idx, s.data()));
                 }
             }
         } catch (Exception e) {
@@ -77,12 +72,14 @@ public class SemgrepScanCheck implements ScanCheck {
         return auditResult(issues.toArray(new AuditIssue[0]));
     }
 
-    private List<AuditIssue> scanJs(HttpRequestResponse rr, String location, String code) throws Exception {
+    private List<AuditIssue> scanJs(String location, String code) throws Exception {
+        // write snippet to temp file
         File tmp = File.createTempFile("burp-sg-", ".js");
         try (BufferedWriter w = new BufferedWriter(new FileWriter(tmp, StandardCharsets.UTF_8))) {
             w.write(code);
         }
 
+        // invoke semgrep per-file
         ProcessBuilder pb = new ProcessBuilder(
             "semgrep",
             "--config", rulesDir,
@@ -90,6 +87,7 @@ public class SemgrepScanCheck implements ScanCheck {
             tmp.getAbsolutePath()
         );
         Process p = pb.start();
+
         JsonNode root = mapper.readTree(p.getInputStream());
         p.waitFor();
 
@@ -100,11 +98,6 @@ public class SemgrepScanCheck implements ScanCheck {
             int    line = hit.path("start").path("line").asInt(-1);
             String loc  = location + "#L" + line;
 
-            // Highlight the entire request/response in yellow with a note
-            HttpRequestResponse annotated = rr.withAnnotations(
-                Annotations.annotations("Semgrep rule: " + id, HighlightColor.YELLOW)
-            );
-
             result.add(auditIssue(
                 id,
                 msg,
@@ -114,8 +107,7 @@ public class SemgrepScanCheck implements ScanCheck {
                 AuditIssueConfidence.CERTAIN,
                 "",
                 "",
-                AuditIssueSeverity.MEDIUM,
-                annotated
+                AuditIssueSeverity.MEDIUM
             ));
         }
 
