@@ -34,6 +34,10 @@ import static burp.api.montoya.scanner.audit.issues.AuditIssue.auditIssue;
 public class SemgrepScanCheck implements ScanCheck {
     private final MontoyaApi api;
     private final ObjectMapper mapper = new ObjectMapper();
+<<<<<<< HEAD
+=======
+  // Replace the rulesDir below with your own directory
+>>>>>>> origin/main
     private final String rulesDir = "/home/kali/semgrab/semgrep-rules/javascript/";
 
     public SemgrepScanCheck(MontoyaApi api) {

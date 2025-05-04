@@ -1,7 +1,11 @@
 package burp;
 
 import burp.api.montoya.MontoyaApi;
+<<<<<<< HEAD
 import burp.api.montoya.BurpExtension;       // the Montoya entry‐point interface
+=======
+import burp.api.montoya.BurpExtension;      
+>>>>>>> origin/main
 import burp.api.montoya.scanner.Scanner;
 
 public class Extension implements BurpExtension {
