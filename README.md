@@ -5,7 +5,7 @@ Burpsuite Extension built to passively send copies of proxied HTML/JS to Semgrep
 `git clone https://github.com/N0ur5/Burp2Sem.git`
 
 ## Mod it
-`Several semgrep "official" yaml rules are packaged with this repo. If you want to point at a different directory full of rules, modify the "rulesDir" variable in SemgrepScanCheck.java`
+Point this tool at a directory full of semgrep rules by modifying the "rulesDir" variable in SemgrepScanCheck.java
 
 ## Build it
 `cd Burp2Sem`
@@ -16,7 +16,7 @@ Burpsuite Extension built to passively send copies of proxied HTML/JS to Semgrep
 `In BurpSuite -> Extensions -> Add -> Find SemgrepPassiveScanner-*.*.jar (in /target)`
 
 ## Use it
-`This is a passive check. Assuming you have semgrep installed locally... this thing should just cook "behind the scenes" and flag anything that semgrep would flag. 
+This is a passive check. Assuming you have semgrep installed locally... this thing should just cook "behind the scenes" and flag anything that semgrep would flag. You will need to take the finding and manually track down the actualy exploitability of any flagged Issues.
 
 
 ## TODO (Maybe... someday)
