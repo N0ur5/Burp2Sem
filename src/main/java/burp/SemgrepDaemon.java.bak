@@ -1,0 +1,91 @@
+package burp;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * A persistent Semgrep RPC daemon using the semgrep CLI wrapper.
+ * Starts semgrep in RPC mode with a rules directory and reuses the process for multiple scans.
+ */
+public class SemgrepDaemon {
+    private final Process process;
+    private final BufferedWriter stdin;
+    private final BufferedReader stdout;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Launches semgrep in RPC mode pointing at the given rules directory.
+     * @param rulesDir path to a directory of Semgrep rule YAMLs
+     * @throws IOException if semgrep cannot be started
+     */
+    public SemgrepDaemon(String rulesDir) throws IOException {
+    // Path to semgrep-core binary
+    String binaryPath = "/home/kali/.local/share/pipx/venvs/semgrep/lib/python3.13/site-packages/semgrep/bin/semgrep-core";
+    // Collect all YAML rule files in the directory
+    File dir = new File(rulesDir);
+    File[] ruleFiles = dir.listFiles((d,name) -> name.endsWith(".yaml") || name.endsWith(".yml"));
+    if (ruleFiles == null || ruleFiles.length == 0) {
+        throw new IOException("No rule files found in " + rulesDir);
+    }
+    List<String> cmd = new ArrayList<>();
+    cmd.add(binaryPath);
+    cmd.add("-rpc");
+    for (File rf : ruleFiles) {
+        cmd.add("-rules");
+        cmd.add(rf.getAbsolutePath());
+    }
+    ProcessBuilder pb = new ProcessBuilder(cmd);
+    pb.redirectErrorStream(true);
+    process = pb.start();
+    stdin  = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8));
+    stdout = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
+}/**
+     * Scan a JavaScript snippet via RPC and return the raw JSON 'results' list.
+     * @param jsCode JavaScript code to scan
+     * @return list of JsonNode, one per finding
+     * @throws IOException if communication with the daemon fails
+     */
+    public List<JsonNode> scan(String jsCode) throws IOException {
+        ObjectNode req = objectMapper.createObjectNode();
+        req.put("jsonrpc", "2.0");
+        req.put("id", 1);
+        req.put("method", "scan");
+        req.put("params", jsCode);
+
+        stdin.write(req.toString());
+        stdin.newLine();
+        stdin.flush();
+
+        String line = stdout.readLine();
+        if (line == null) {
+            throw new IOException("Semgrep daemon closed the stream");
+        }
+        JsonNode resp = objectMapper.readTree(line);
+        JsonNode results = resp.path("result").path("results");
+        if (!results.isArray()) {
+            return Collections.emptyList();
+        }
+        return objectMapper.convertValue(
+            results,
+            new TypeReference<List<JsonNode>>() {}
+        );
+    }
+
+    /**
+     * Shut down the semgrep process.
+     */
+    public void shutdown() {
+        process.destroy();
+    }
+}
