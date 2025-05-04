@@ -1,5 +1,5 @@
 # Burp2Sem
-My first attempt at a Burpsuite Extension that is built to passively send temp copies of proxied HTML/JS to Semgrep. And yes, like most passive checks - it is full of -/+'s.... it's static analysis... 
+My first attempt at a Burpsuite Extension. It is built to passively send temp copies of proxied HTML/JS to Semgrep. And yes, like most passive checks - it is full of -/+'s.... it's static analysis... 
 
 Burp (as of `2025.2.4`) seems to do a great job batching these passive tasks up since they do take some time to complete and are resource intensive. There is likely enormous room for a performance boost but  ¯\\_(ツ)_/¯
 
