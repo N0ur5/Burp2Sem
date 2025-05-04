@@ -5,7 +5,8 @@ Burpsuite Extension built to passively send copies of proxied HTML/JS to Semgrep
 `git clone https://github.com/N0ur5/Burp2Sem.git`
 
 ## Build it
-
+`cd Burp2Sem`
+`mvn clean package`
 
 
 ## TODO (Maybe... someday)
